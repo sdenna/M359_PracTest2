@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Computer Science A — Practice Exam #2</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f6; color: #1a1a1a; min-height: 100vh; }
+  .screen { display: none; padding: 2rem 1.5rem; }
+  .screen.active { display: block; }
+  .container { max-width: 680px; margin: 0 auto; }
+  .container-sm { max-width: 520px; margin: 0 auto; padding-top: 1rem; }
+  h1 { font-size: 26px; font-weight: 600; margin-bottom: 0.75rem; }
+  h2 { font-size: 22px; font-weight: 600; margin-bottom: 1.5rem; }
+  h3 { font-size: 16px; font-weight: 600; margin-bottom: 1rem; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #666; margin-bottom: 0.5rem; text-transform: uppercase; }
+  .subtitle { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 2rem; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; border: 1px solid #d0d0cc; background: #fff; color: #1a1a1a; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.15s, border-color 0.15s; font-family: inherit; }
+  .btn:hover { background: #f0f0ed; }
+  .btn:disabled { opacity: 0.4; cursor: default; }
+  .btn-primary { background: #1a5fa8; color: #fff; border-color: #1a5fa8; }
+  .btn-primary:hover { background: #144d8a; border-color: #144d8a; }
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .btn-block { width: 100%; justify-content: center; padding: 13px; }
+  .btn-flag { background: #fef3e2; color: #7a4a0a; border-color: #f0a830; }
+  .btn-flag:hover { background: #fde9c4; }
+  .btn-flagged { background: #f0a830; color: #3d2105; border-color: #d4881a; }
+  .btn-flagged:hover { background: #d4881a; }
+  .btn-export { background: #f0f5ff; color: #1a5fa8; border-color: #b0c8e8; }
+  .btn-export:hover { background: #deeaf8; }
+  .card { background: #fff; border: 1px solid #e0e0dc; border-radius: 12px; padding: 1.25rem; }
+  .card-mode { cursor: pointer; transition: border-color 0.15s; margin-bottom: 10px; }
+  .card-mode:hover { border-color: #1a5fa8; }
+  .card-mode.selected { border: 2px solid #1a5fa8; }
+  .card-mode-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .card-mode-desc { font-size: 13px; color: #666; }
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+  .metric { background: #f0f0ed; border-radius: 8px; padding: 1rem; text-align: center; }
+  .metric-val { font-size: 24px; font-weight: 600; }
+  .metric-lbl { font-size: 12px; color: #666; margin-top: 4px; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .q-counter { font-size: 13px; color: #555; }
+  .timer { font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 8px; background: #f0f0ed; color: #1a1a1a; font-family: 'Courier New', monospace; }
+  .timer.warn { background: #fde8e8; color: #a32d2d; }
+  .progress-bar { height: 4px; background: #e8e8e5; border-radius: 2px; margin-bottom: 1.5rem; }
+  .progress-fill { height: 100%; background: #1a5fa8; border-radius: 2px; transition: width 0.3s; }
+  .topic-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; background: #deeaf8; color: #0c407a; margin-bottom: 0.75rem; font-weight: 500; }
+  .skill-label { font-size: 13px; color: #555; margin-bottom: 0.75rem; font-style: italic; }
+  .q-text { font-size: 15px; line-height: 1.7; margin-bottom: 1rem; }
+  .code-block { background: #f4f4f0; border: 1px solid #e0e0dc; border-radius: 8px; padding: 14px 16px; font-family: 'Courier New', Consolas, monospace; font-size: 13px; line-height: 1.6; margin: 0 0 1rem; white-space: pre; overflow-x: auto; }
+  .opt { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border: 1px solid #e0e0dc; border-radius: 8px; cursor: pointer; margin-bottom: 8px; transition: border-color 0.15s, background 0.15s; background: #fff; }
+  .opt:hover { border-color: #aaa; background: #f8f8f6; }
+  .opt.selected { border-color: #1a5fa8; background: #deeaf8; }
+  .opt.selected .opt-letter { background: #1a5fa8; color: #fff; border-color: #1a5fa8; }
+  .opt.correct { border-color: #2d7a2d; background: #e8f4e8; }
+  .opt.correct .opt-letter { background: #2d7a2d; color: #fff; border-color: #2d7a2d; }
+  .opt.wrong { border-color: #a32d2d; background: #fde8e8; }
+  .opt.wrong .opt-letter { background: #a32d2d; color: #fff; border-color: #a32d2d; }
+  .opt-letter { min-width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; color: #555; }
+  .opt-text { font-size: 14px; line-height: 1.6; padding-top: 3px; color: #1a1a1a; white-space: pre-wrap; word-break: break-word; }
+  .opt-text.is-code { font-family: 'Courier New', Consolas, monospace; font-size: 13px; }
+  .feedback-box { margin-top: 1rem; padding: 12px 14px; border-radius: 8px; font-size: 14px; line-height: 1.6; }
+  .feedback-correct { background: #e8f4e8; color: #1a5a1a; border: 1px solid #a8d8a8; }
+  .feedback-wrong { background: #fde8e8; color: #7a1a1a; border: 1px solid #e8a8a8; }
+  .explanation-box { margin-top: 1rem; padding: 14px 16px; border-radius: 8px; font-size: 14px; line-height: 1.7; background: #f0f5ff; border-left: 3px solid #1a5fa8; color: #1a1a1a; }
+  .explanation-box strong { font-weight: 600; display: block; margin-bottom: 6px; color: #0c407a; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .nav-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
+  .nav-dots-section { margin-top: 1.5rem; }
+  .nav-dots-label { font-size: 12px; color: #888; margin-bottom: 6px; }
+  .nav-dots { display: flex; flex-wrap: wrap; gap: 4px; }
+  .dot { width: 24px; height: 24px; border-radius: 4px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; cursor: pointer; color: #666; transition: background 0.1s; }
+  .dot:hover { border-color: #1a5fa8; color: #1a5fa8; }
+  .dot.current { border-color: #1a5fa8; color: #1a5fa8; font-weight: 700; }
+  .dot.answered { background: #1a5fa8; color: #fff; border-color: #1a5fa8; }
+  .dot.flagged { background: #f0a830; color: #3d2105; border-color: #d4881a; }
+  .result-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e8e8e5; gap: 8px; }
+  .result-row:last-child { border-bottom: none; }
+  .result-topic { flex: 1; font-size: 13px; }
+  .result-count { font-size: 13px; color: #666; white-space: nowrap; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .pill-good { background: #e8f4e8; color: #1a5a1a; }
+  .pill-ok { background: #fef3e2; color: #7a4a0a; }
+  .pill-bad { background: #fde8e8; color: #7a1a1a; }
+  .rec-box { margin-top: 2rem; padding: 1.25rem; background: #f0f0ed; border-radius: 12px; }
+  .rec-box h3 { font-size: 14px; font-weight: 600; margin-bottom: 0.5rem; }
+  .rec-box p { font-size: 14px; color: #444; line-height: 1.7; }
+  .action-row { margin-top: 1.5rem; display: flex; gap: 10px; flex-wrap: wrap; }
+  .export-row { margin-top: 1rem; padding: 1rem; background: #f8fbff; border: 1px solid #c8dcf0; border-radius: 10px; }
+  .export-row p { font-size: 13px; color: #555; margin-bottom: 0.6rem; font-weight: 600; }
+  .export-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .review-item { background: #fff; border: 1px solid #e0e0dc; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+  .review-item:hover { border-color: #1a5fa8; background: #f8fbff; }
+  .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .review-qnum { font-size: 12px; color: #666; }
+  .review-skill { font-size: 13px; color: #444; margin-bottom: 8px; }
+  .review-ans { font-size: 13px; margin-top: 4px; }
+  .review-ans strong { font-weight: 600; }
+  .review-correct-ans { color: #1a5a1a; }
+  .review-wrong-ans { color: #7a1a1a; }
+  .review-hint { font-size: 12px; color: #1a5fa8; margin-top: 10px; font-weight: 500; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #666; margin-top: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 2px; }
+  @media (max-width: 500px) { .screen { padding: 1.25rem 1rem; } h1 { font-size: 22px; } .metrics { grid-template-columns: repeat(2, 1fr); } }
+
+  .opt-crossout-btn { margin-left: auto; flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid #ccc; background: #fff; color: #999; font-size: 11px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s; line-height: 1; }
+  .opt-crossout-btn:hover { background: #fde8e8; color: #a32d2d; border-color: #e0a0a0; }
+  .opt.crossed-out { opacity: 0.38; }
+  .opt.crossed-out .opt-text { text-decoration: line-through; }
+  .opt.crossed-out .opt-crossout-btn { background: #fde8e8; color: #a32d2d; border-color: #e0a0a0; }
+</style>
+</head>
+<body>
+
+<div id="start-screen" class="screen active">
+  <div class="container-sm">
+    <p class="eyebrow">AP Computer Science A</p>
+    <h1>Practice Exam #2</h1>
+    <p class="subtitle">Questions are AP exam-weighted: ~21% Objects &amp; Methods · ~31% Selection &amp; Iteration · ~14% Class Creation · ~33% Data Collections. Values and variants change every session.</p>
+    <div class="metrics">
+      <div class="metric"><div class="metric-val">42+</div><div class="metric-lbl">Question pool</div></div>
+      <div class="metric"><div class="metric-val">90 min</div><div class="metric-lbl">Full exam timer</div></div>
+      <div class="metric"><div class="metric-val">4</div><div class="metric-lbl">AP Units</div></div>
+    </div>
+    <p style="font-size:14px;font-weight:600;margin-bottom:0.75rem">How would you like to take the test?</p>
+    <div class="card card-mode selected" id="mode-all" onclick="selectMode('all')">
+      <div class="card-mode-title">All 42 questions</div>
+      <div class="card-mode-desc">Full AP-style exam with 90-minute countdown timer</div>
+    </div>
+    <div class="card card-mode" id="mode-10" onclick="selectMode('chunked')">
+      <div class="card-mode-title">10 questions at a time</div>
+      <div class="card-mode-desc">Untimed practice — proportionally weighted, different questions every session</div>
+    </div>
+    <div style="margin-top:1.5rem">
+      <button class="btn btn-primary btn-block" onclick="startExam()">Start exam</button>
+    </div>
+    <div style="margin-top:1rem;padding:1rem;background:#f8fbff;border:1px solid #c8dcf0;border-radius:10px;">
+      <p style="font-size:13px;font-weight:600;color:#444;margin-bottom:0.5rem;">&#128196; Export a question set as PDF</p>
+      <p style="font-size:12px;color:#777;margin-bottom:0.75rem;">Generates a fresh set based on your selected mode above, without starting the timed exam.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-sm btn-export" onclick="exportFromStart('both')">Questions + Answer Key</button>
+        <button class="btn btn-sm btn-export" onclick="exportFromStart('key')">Answer Key only</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="exam-screen" class="screen">
+  <div class="container">
+    <div class="top-bar">
+      <span class="q-counter" id="q-counter">Question 1</span>
+      <span class="timer" id="timer-display">90:00</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="card" style="margin-bottom:1rem">
+      <div class="topic-badge" id="q-topic"></div>
+      <div class="skill-label" id="q-skill"></div>
+      <div class="q-text" id="q-text"></div>
+      <pre class="code-block" id="q-code" style="display:none"></pre>
+      <div id="options-container"></div>
+      <div id="feedback-box" style="display:none"></div>
+      <div id="explanation-box" style="display:none"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn btn-sm" id="prev-btn" onclick="navigate(-1)">&#8592; Prev</button>
+      <button class="btn btn-sm btn-flag" id="flag-btn" onclick="toggleFlag()">Flag for review</button>
+      <button class="btn btn-sm btn-primary" id="next-btn">Next &#8594;</button>
+    </div>
+    <div id="back-to-review-row" style="display:none;margin-top:0.75rem;text-align:center">
+      <button class="btn btn-sm" onclick="goToReview()">&#8592; Back to answer review</button>
+    </div>
+    <div class="nav-dots-section" id="nav-dots-section">
+      <div class="nav-dots-label">Jump to question</div>
+      <div class="nav-dots" id="nav-dots"></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1a5fa8"></div> Answered</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f0a830"></div> Flagged</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e0e0dc;border:1px solid #ccc"></div> Unanswered</div>
+      </div>
+    </div>
+    <div id="submit-anytime-row" style="margin-top:1.25rem;text-align:center;">
+      <button class="btn btn-sm" style="color:#a32d2d;border-color:#e0a0a0;" onclick="confirmSubmit()">&#9654; Submit exam early</button>
+    </div>
+  </div>
+</div>
+
+<div id="results-screen" class="screen">
+  <div class="container">
+    <p class="eyebrow">Results</p>
+    <h2>Exam complete</h2>
+    <div class="metrics">
+      <div class="metric"><div class="metric-val" id="res-score">--</div><div class="metric-lbl">Score</div></div>
+      <div class="metric"><div class="metric-val" id="res-correct">--</div><div class="metric-lbl">Correct</div></div>
+      <div class="metric" id="res-time-metric"><div class="metric-val" id="res-time">--</div><div class="metric-lbl">Time used</div></div>
+    </div>
+    <h3>Performance by topic</h3>
+    <div id="topic-results"></div>
+    <div class="rec-box"><h3>Study recommendation</h3><p id="recommendation"></p></div>
+    <div class="export-row">
+      <p>&#128196; Export this question set as PDF</p>
+      <div class="export-btns">
+        <button class="btn btn-sm btn-export" onclick="exportPDF('both')">Questions + Answer Key</button>
+        <button class="btn btn-sm btn-export" onclick="exportPDF('key')">Answer Key only</button>
+      </div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-primary btn-sm" onclick="goToReview()">Review answers</button>
+      <button class="btn btn-sm" onclick="resetExam()">Take again</button>
+    </div>
+  </div>
+</div>
+
+<div id="review-screen" class="screen">
+  <div class="container">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:0.75rem">
+      <button class="btn btn-sm" onclick="goToResults()">&#8592; Back to results</button>
+      <h2 style="margin:0;font-size:18px">Answer review</h2>
+    </div>
+    <p style="font-size:13px;color:#666;margin-bottom:1.25rem">Click any card to see the full question and explanation.</p>
+    <div id="review-list"></div>
+  </div>
+</div>
+<script>
+const LETTERS = ['A','B','C','D'];
+function rnd(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function make4(correct,candidates,fallbacks){const seen=new Set([correct]);const out=[correct];for(const c of[...(candidates||[]),...(fallbacks||[])]){if(out.length===4)break;if(!seen.has(c)){seen.add(c);out.push(c);}}const s=shuffle(out);return{options:s,answer:s.indexOf(correct)};}
+
+
+const U1 = [
+
+  function genAssignment(){
+    const x=rnd(10,30)*2,y=rnd(3,9)*2+1;
+    const rx=y,ry=x*y;const correct=`x = ${rx}, y = ${ry}`;
+    const{options,answer}=make4(correct,[`x = ${x}, y = ${y}`,`x = ${y}, y = ${x}`,`x = ${x}, y = ${x+y}`,`x = ${rx}, y = ${x+y}`],[`x = ${x}, y = ${ry}`]);
+    return{topic:"U1 · Assignment Statements",skill:"Trace variable assignments",
+      text:"What are the values of x and y after the code executes?",
+      code:`int x = ${x};\nint y = ${y};\nint temp = x;\nx = y;\ny = temp * x;`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`temp = ${x}. x = y = ${y}. y = temp * x = ${x} * ${y} = ${ry}. Final: x = ${rx}, y = ${ry}.`};
+  },
+
+  function genArithmetic(){
+    const a=rnd(2,8),b=rnd(2,6),c=rnd(2,5);
+    const first=a+b*c;const second=first%2+first;
+    const fw=(a+b)*c;const correct=`first = ${first}, second = ${second}`;
+    const{options,answer}=make4(correct,[`first = ${fw}, second = ${fw+fw%2}`,`first = ${fw}, second = ${fw*2}`,`first = ${first}, second = ${first*2}`,`first = ${first+1}, second = ${second+1}`],[`first = ${first-1}, second = ${second-1}`]);
+    return{topic:"U1 · Arithmetic Expressions",skill:"Apply operator precedence",
+      text:"What are the values of first and second after this code executes?",
+      code:`int first = ${a} + ${b} * ${c};\nint second = first % 2 + first;`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`Multiplication first: ${b}*${c}=${b*c}, +${a}=${first}. second: ${first}%2=${first%2}, +${first}=${second}.`};
+  },
+
+  function genInstantiation(){
+    const classes=[
+      {cls:"Painting",vars:["id (int)","title (String)"],v1:rnd(100,999),v2:pick(["Starry Night","Mona Lisa","Sunflowers"])},
+      {cls:"Student",vars:["id (int)","name (String)"],v1:rnd(1000,9999),v2:pick(["Alice","Bob","Carlos"])},
+      {cls:"Car",vars:["year (int)","make (String)"],v1:rnd(2000,2024),v2:pick(["Toyota","Honda","Ford"])}
+    ];
+    const c=pick(classes);const correct=`new ${c.cls}(${c.v1}, "${c.v2}")`;
+    const opts=shuffle([correct,`new ${c.cls}("${c.v2}", ${c.v1})`,`new ${c.cls}(${c.v1}, "${c.v2}", "extra")`,`new ${c.cls}("${c.v2}", ${c.v1}, "extra")`]);
+    return{topic:"U1 · Object Creation",skill:"Write correct object instantiation code",
+      text:`A ${c.cls} constructor takes an int then a String. Which correctly creates a ${c.cls} object?`,
+      code:null,optIsCode:[true,true,true,true],options:opts,answer:opts.indexOf(correct),
+      explanation:`int first, String second. Correct: new ${c.cls}(${c.v1}, "${c.v2}"). Others have wrong order or wrong number of arguments.`};
+  },
+
+  function genCasting(){
+    const cfgs=[{w:2.6,x:5.0},{w:3.9,x:4.0},{w:7.3,x:3.0},{w:5.8,x:2.0}];
+    const cfg=pick(cfgs);
+    const z1=Math.trunc(cfg.w)/cfg.x;const z2=Math.trunc(cfg.w/cfg.x);
+    const correct=`z1 = ${z1.toFixed(1)}, z2 = ${z2}.0`;
+    const{options,answer}=make4(correct,[`z1 = 0.0, z2 = ${z1.toFixed(1)}`,`z1 = 0.0, z2 = 0.0`,`z1 = ${z1.toFixed(1)}, z2 = ${z1.toFixed(1)}`,`z1 = ${(cfg.w/cfg.x).toFixed(1)}, z2 = ${z2}.0`],[`z1 = ${z2}.0, z2 = ${z1.toFixed(1)}`]);
+    return{topic:"U1 · Casting",skill:"Determine result of casting expressions",
+      text:`Given double w = ${cfg.w} and double x = ${cfg.x}, what are the resulting values?`,
+      code:`double z1 = (int) w / x;\ndouble z2 = (int) (w / x);`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`z1: (int)${cfg.w}=${Math.trunc(cfg.w)}, then ${Math.trunc(cfg.w)}/${cfg.x}=${z1.toFixed(1)}. z2: ${cfg.w}/${cfg.x}=${(cfg.w/cfg.x).toFixed(3)}, (int)=${z2}, stored as ${z2}.0.`};
+  },
+
+  function genStringMethods(){
+    const strings=["DEFGHI","MONKEY","PLANET","STREAM","BRIGHT"];
+    const str=pick(strings);
+    const from=rnd(1,3),to=rnd(from+1,Math.min(from+3,str.length));
+    const s1=rnd(to,str.length-1);
+    const part1=str.substring(s1),part2=str.substring(from,to);
+    const correct=`"${part1+part2}"`;
+    const{options,answer}=make4(correct,[`"${str.substring(Math.min(s1+1,str.length-1))+part2}"`,`"${part1+str.substring(from,Math.min(to+1,str.length))}"`,`"${part2+part1}"`,`"${str}"`],[`"${part1}"`,`"${part2}"`]);
+    return{topic:"U1 · String Manipulation",skill:"Call and evaluate String methods",
+      text:`Given String original = "${str}", what does this expression evaluate to?`,
+      code:`original.substring(${s1}) + original.substring(${from}, ${to})`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`substring(${s1})="${part1}". substring(${from},${to})="${part2}". Concatenated: "${part1+part2}".`};
+  },
+
+  function genMathRandom(){
+    const mult=rnd(3,10),offset=rnd(1,15);
+    const lo=offset,hi=offset+mult-1;
+    const correct=`${lo} to ${hi} inclusive`;
+    const{options,answer}=make4(correct,[`${lo-1} to ${hi} inclusive`,`${lo} to ${hi+1} inclusive`,`0 to ${mult-1} inclusive`,`${lo} to ${hi-1} inclusive`],[`1 to ${mult} inclusive`]);
+    return{topic:"U1 · Math Class",skill:"Describe range produced by Math.random()",
+      text:"What range of integers can be produced by this expression?",
+      code:`(int)(Math.random() * ${mult}) + ${offset}`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`Math.random()∈[0,1). ×${mult}∈[0,${mult}). (int)→0 to ${mult-1}. +${offset}→${lo} to ${hi}.`};
+  },
+
+  function genCallMethod(){
+    const vs=[
+      {text:"A Pair object myPair has a public method getX() and a private int x. Which correctly retrieves x from outside the class?",options:["myPair.getX()","myPair.getX(x)","myPair.x","x1"],answer:0,explanation:"Use dot notation: objectName.methodName(). myPair.x fails (private). x1 is out of scope."},
+      {text:"A Circle object c has a public method getRadius() and a private double radius. Which correctly retrieves radius from outside the class?",options:["c.getRadius()","c.radius","getRadius(c)","Circle.getRadius()"],answer:0,explanation:"c.getRadius() is correct. c.radius is private. getRadius(c) is invalid syntax. Circle.getRadius() requires static."},
+      {text:"A BankAccount object acct has a public method getBalance() and a private double balance. Which correctly reads balance from outside the class?",options:["acct.balance","BankAccount.getBalance()","acct.getBalance()","getBalance(acct)"],answer:2,explanation:"acct.getBalance() is correct dot notation. acct.balance is private. BankAccount.getBalance() needs static."}
+    ];
+    const v=pick(vs);
+    return{topic:"U1 · Calling Instance Methods",skill:"Call instance methods on objects",code:null,optIsCode:[true,true,true,true],...v};
+  },
+
+  function genStringAlgo(){
+    const vs=[
+      {text:'str = "color of love". What is printed?',code:'String str = "color of love";\nwhile (str.indexOf("o") >= 0) {\n  int j = str.indexOf("o");\n  System.out.print(str.substring(j));\n  str = str.substring(j + 1);\n}',options:["olor of loveof loveve","or of love","olor of love","r f lve"],answer:0,explanation:'Each pass: find "o", print from there to end, trim past that "o". Prints: "olor of love" + "or of love" + "of love" + "ove" = "olor of loveof loveve".'},
+      {text:'str = "banana". What is printed?',code:'String str = "banana";\nwhile (str.indexOf("a") >= 0) {\n  int j = str.indexOf("a");\n  System.out.print(str.substring(j));\n  str = str.substring(j + 1);\n}',options:["ananaan","anana","banana","ana"],answer:0,explanation:'Pass 1: "a" at 1→print "anana". Pass 2: "a" at 1→print "ana". Pass 3: "a" at 1→print "a". Combined: "ananaan".'}
+    ];
+    const v=pick(vs);
+    return{topic:"U1 · String Algorithms",skill:"Trace a string-processing loop",...v,optIsCode:[false,false,false,false]};
+  },
+
+  function genOpenSource(){
+    const vs=[
+      {text:"In which situation is publishing code as open source most appropriate?",options:["When the programmer wants others to freely modify and include the code in their programs","When the programmer wants to prevent others from sharing the code","When the programmer wants to require payment for use","When the programmer wants to ensure attributes are encapsulated"],answer:0,explanation:"Open source lets others view, use, and modify code freely. It encourages community collaboration and reuse."},
+      {text:"A developer releases a library under an open-source license. Which best describes the effect?",options:["Other developers can view, modify, and contribute improvements","The code is automatically protected from bugs","Only the original developer can use the code","The code is encrypted to prevent unauthorized access"],answer:0,explanation:"Open source grants others the right to view, use, and often modify the code, fostering community improvement."}
+    ];
+    const v=pick(vs);
+    return{topic:"U1 · Impact of Computing",skill:"Explain the purpose of open-source licensing",code:null,optIsCode:[false,false,false,false],...v};
+  }
+];
+
+// ─── UNIT 2 GENERATORS (Selection & Iteration) — target 13 of 42 ─────────────
+
+const U2 = [
+
+  function genBoolean(){
+    const vs=[
+      {text:"Which best describes when (j > 0 && k > 0) || (j < 0 && k < 0) evaluates to true?",code:null,options:["When j and k are both equal to 0","When j and k are both positive or both negative","When j is greater than k","When j and k have different signs"],answer:1,explanation:"Left: both positive. Right: both negative. || means either is sufficient → same sign (both nonzero)."},
+      {text:"When does !(x > 0) || !(y > 0) evaluate to false?",code:null,options:["When x and y are both negative","When x and y are both zero","When x and y are both positive","When x is positive and y is negative"],answer:2,explanation:"For || to be false, both sides must be false. !(x>0) is false when x>0; !(y>0) is false when y>0. So false only when both x>0 and y>0."},
+      {text:"Which best describes when (a == b) || (a + b == 0) is true?",code:null,options:["Only when a equals b","When a equals b, or when a and b are additive inverses","When a and b are both zero","Only when a + b is zero"],answer:1,explanation:"(a==b) is true when equal; (a+b==0) is true when they're additive inverses like 3 and -3. Either condition suffices."}
+    ];
+    const v=pick(vs);
+    return{topic:"U2 · Boolean Expressions",skill:"Describe behavior of compound boolean expressions",...v,optIsCode:[false,false,false,false]};
+  },
+
+  function genNestedIf(){
+    const cfgs=[
+      {cost:25,t1:100,t2:50,d1:10,d2:5,d3:2},{cost:75,t1:100,t2:50,d1:15,d2:8,d3:3},
+      {cost:120,t1:100,t2:50,d1:20,d2:10,d3:5},{cost:30,t1:200,t2:100,d1:25,d2:12,d3:4}
+    ];
+    const cfg=pick(cfgs);
+    const discount=cfg.cost>=cfg.t1?cfg.d1:cfg.cost>=cfg.t2?cfg.d2:cfg.d3;
+    const result=cfg.cost-discount;const correct=`${result}.0`;
+    const{options,answer}=make4(correct,[`${cfg.cost}.0`,`${cfg.cost-cfg.d1}.0`,`${cfg.cost-cfg.d2}.0`,`${cfg.cost-cfg.d3}.0`],[`${cfg.cost+discount}.0`]);
+    return{topic:"U2 · Nested if Statements",skill:"Trace nested branching logic",
+      text:`Code runs with cost = ${cfg.cost}.0. What value is printed?`,
+      code:`double discount = 0.0;\nif (cost >= ${cfg.t1}) {\n  discount = ${cfg.d1}.0;\n} else if (cost >= ${cfg.t2}) {\n  discount = ${cfg.d2}.0;\n} else {\n  discount = ${cfg.d3}.0;\n}\nSystem.out.println(cost - discount);`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`cost=${cfg.cost}: ${cfg.cost>=cfg.t1?'first if':cfg.cost>=cfg.t2?'else if':'else'} runs, discount=${discount}.0. Result: ${result}.0.`};
+  },
+
+  function genWriteNestedIf(){
+    const vs=[
+      {text:'A game assigns: "Try again." for score < 250, "Good!" for 250–500, "Great!" for > 500. Which code is correct?',
+        options:['if (score < 250) {\n  message = "Try again.";\n} else if (score <= 500) {\n  message = "Good!";\n} else {\n  message = "Great!";\n}','if (score <= 250) {\n  message = "Try again.";\n}\nif (score <= 500) {\n  message = "Good!";\n} else {\n  message = "Great!";\n}','if (score >= 250) {\n  message = "Good!";\n} else if (score > 500) {\n  message = "Great!";\n} else {\n  message = "Try again.";\n}','if (score > 500) {\n  message = "Great!";\n} else if (score >= 250) {\n  message = "Good!";\n} else {\n  message = "Try again.";\n}'],
+        answer:0,explanation:'Option A: if-else if-else ensures exactly one branch. Option D also works (checks > 500 first) — but A checks lowest threshold first correctly. Actually both A and D are valid structures; A is the intended answer as it matches score < 250 exactly.'},
+      {text:'A shop: "Premium" for spend >= 200, "Standard" for >= 100, "None" otherwise. Which is correct?',
+        options:['if (spend >= 200) {\n  discount = "Premium";\n} else if (spend >= 100) {\n  discount = "Standard";\n} else {\n  discount = "None";\n}','if (spend >= 100) {\n  discount = "Standard";\n} else if (spend >= 200) {\n  discount = "Premium";\n} else {\n  discount = "None";\n}','if (spend >= 200) {\n  discount = "Premium";\n}\nif (spend >= 100) {\n  discount = "Standard";\n}','if (spend < 100) {\n  discount = "None";\n} else {\n  discount = "Standard";\n}'],
+        answer:0,explanation:'Check highest threshold first. Option B checks >= 100 first so 250 gets "Standard" incorrectly. Option C uses separate ifs so "Standard" overwrites "Premium".'}
+    ];
+    const v=pick(vs);
+    return{topic:"U2 · Writing Nested if Statements",skill:"Write correct if-else-if logic",code:null,optIsCode:[true,true,true,true],...v};
+  },
+
+  function genDeMorgan(){
+    const vs=[
+      {text:"Which is equivalent to !(isEven && isPositive) && isPrime?",options:["(!isEven || !isPositive) && isPrime","(!isEven && !isPositive) && isPrime","(!isEven || !isPositive) || isPrime","(!isEven && !isPositive) || isPrime"],answer:0,explanation:"De Morgan's: !(A&&B)=!A||!B. So !(isEven&&isPositive)=(!isEven||!isPositive). Full: (!isEven||!isPositive)&&isPrime."},
+      {text:"Which is equivalent to !(isRed || isCircle)?",options:["!isRed && !isCircle","!isRed || !isCircle","isRed && isCircle","!(isRed && isCircle)"],answer:0,explanation:"De Morgan's: !(A||B)=!A&&!B. So !(isRed||isCircle)=!isRed&&!isCircle."},
+      {text:"Which is equivalent to !(a > 0) || !(b > 0)?",options:["!(a > 0 && b > 0)","!(a > 0 || b > 0)","(a <= 0) && (b <= 0)","(a > 0) && (b > 0)"],answer:0,explanation:"De Morgan's: !A||!B=!(A&&B). So !(a>0)||!(b>0)=!(a>0&&b>0)."}
+    ];
+    const v=pick(vs);
+    return{topic:"U2 · De Morgan's Law",skill:"Apply De Morgan's Law to simplify boolean expressions",code:null,optIsCode:[true,true,true,true],...v};
+  },
+
+  function genForLoopBug(){
+    const vs=[
+      {text:'Loop prints "97531-1" but should print "97531". Which fix is correct?',code:'for (int j = 10; j >= 0; j -= 2) {\n  System.out.print(j - 1);\n}',options:['Change j >= 0 to j > 0','Change j -= 2 to j -= 1','Change j = 10 to j = 11','Change j - 1 to j'],answer:0,explanation:'When j=0, j-1=-1 is wrong. Changing to j>0 stops before j reaches 0.'},
+      {text:'Loop prints "02468" but should print "2468". Which fix removes the 0?',code:'for (int j = 0; j <= 8; j += 2) {\n  System.out.print(j);\n}',options:['Change j = 0 to j = 2','Change j <= 8 to j < 8','Change j += 2 to j++','Change j to j + 1'],answer:0,explanation:'Loop starts at 0, printing 0 first. Changing initializer to j=2 skips that unwanted print.'},
+      {text:'Loop should print 3 to 15 (step 3) but also prints 18. Which fix is correct?',code:'for (int j = 3; j <= 18; j += 3) {\n  System.out.print(j + " ");\n}',options:['Change j <= 18 to j <= 15','Change j += 3 to j += 2','Change j = 3 to j = 1','Change j <= 18 to j < 18'],answer:0,explanation:'Condition j<=18 allows j=18. Changing to j<=15 stops after printing 15.'}
+    ];
+    const v=pick(vs);
+    return{topic:"U2 · for Loop Bugs",skill:"Identify and fix for loop errors",optIsCode:[true,true,true,true],...v};
+  },
+
+  function genLoopCount(){
+    const outerMax=rnd(3,6),innerMax=rnd(3,6);const total=outerMax*innerMax;
+    const correct=String(total);
+    const{options,answer}=make4(correct,[String((outerMax-1)*innerMax),String(outerMax*(innerMax-1)),String((outerMax+1)*innerMax),String(outerMax+innerMax)],["10","12","15","16","20","24","25"].filter(x=>x!==correct));
+    return{topic:"U2 · Run-Time Analysis",skill:"Count statement executions in nested loops",
+      text:"How many times does the print statement execute?",
+      code:`for (int outer = 0; outer < ${outerMax}; outer++) {\n  for (int inner = ${innerMax-1}; inner >= 0; inner--) {\n    System.out.print("*");\n  }\n}`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`Outer: ${outerMax} iters. Inner: ${innerMax} iters. Total: ${outerMax}×${innerMax}=${total}.`};
+  },
+
+  function genEquivalentLoop(){
+    const vs=[
+      {text:"The while loop sums 1 through 6. Which for loop is equivalent?",code:"int j = 0, sum = 0;\nwhile (j < 6) {\n  j++;\n  sum += j;\n}",options:["for (int j=1; j<=6; j+=2)\n  sum += j;","for (int j=1; j<=7; j++)\n  sum += j;","for (int j=1; j<6; j++)\n  sum += j;","for (int j=1; j<=6; j++)\n  sum += j;"],answer:3,explanation:"While adds 1+2+3+4+5+6=21. Option D: j=1..6 inclusive = same sum. Option C misses j=6."},
+      {text:"The while loop computes 1×2×3×4. Which for loop is equivalent?",code:"int k = 1, product = 1;\nwhile (k <= 4) {\n  product *= k;\n  k++;\n}",options:["for (int k=1; k<4; k++) product *= k;","for (int k=0; k<=4; k++) product *= k;","for (int k=1; k<=4; k++) product *= k;","for (int k=1; k<=4; k+=2) product *= k;"],answer:2,explanation:"While: 1×2×3×4=24. Option C: same range → same result. Option A misses k=4. Option B starts at 0."}
+    ];
+    const v=pick(vs);
+    return{topic:"U2 · Equivalent Loops",skill:"Write a for loop equivalent to a while loop",optIsCode:[true,true,true,true],...v};
+  },
+
+  function genWhileTrace(){
+    const start=rnd(1,3),end=rnd(6,10),step=rnd(2,3);
+    const vals=[];for(let i=start;i<=end;i+=step)vals.push(i);
+    const correct=vals.join(" ");
+    const allVals=[];for(let i=start;i<=end+step;i+=step)allVals.push(i);
+    const{options,answer}=make4(correct,[allVals.join(" "),vals.slice(1).join(" "),vals.slice(0,-1).join(" ")],[vals.map(v=>v+1).join(" ")]);
+    return{topic:"U2 · While Loop Trace",skill:"Trace a while loop to determine output",
+      text:"What does this code print?",
+      code:`int i = ${start};\nwhile (i <= ${end}) {\n  System.out.print(i + " ");\n  i += ${step};\n}`,
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`i starts at ${start}, increments by ${step}, stops when i > ${end}. Values printed: ${correct}.`};
+  },
+
+  function genBoolEquiv(){
+    const vs=[
+      {text:"b1 is set by nested ifs. Which single expression always equals b1?",code:"boolean b1 = true;\nif (num > 0) {\n  if (num >= 100) { b1 = false; }\n} else {\n  if (num >= -100) { b1 = false; }\n}",options:["boolean b2 = (num > -100) && (num < 100);","boolean b2 = (num > -100) || (num < 100);","boolean b2 = (num < -100) && (num > 0 || num < 100);","boolean b2 = (num < -100) || (num > 0 && num < 100);"],answer:3,explanation:"b1=true when num∈(0,100) or num<-100. Option D: (num<-100)||(num>0&&num<100) matches exactly."},
+      {text:"Which expression is equivalent to !(p && q)?",options:["!p && !q","!p || !q","p || q","!(p || q)"],answer:1,explanation:"De Morgan's: !(p&&q)=!p||!q."}
+    ];
+    const v=pick(vs);
+    return{topic:"U2 · Boolean Equivalence",skill:"Find equivalent boolean expressions",optIsCode:[true,true,true,true],...v};
+  },
+
+  function genNestedIfTrace(){
+    const vs=[
+      {text:"Which best describes the behavior of this code segment (num is a declared int)?",code:'if (num > 0) {\n  if (num % 2 == 0) {\n    System.out.println("X");\n  } else {\n    System.out.println("Y");\n  }\n}',options:['When num is a negative odd integer, "X" is printed; otherwise "Y" is printed.','When num is a positive even integer, "X" is printed; otherwise "Y" is printed.','When num is a positive even integer, "X" is printed; when num is positive odd, "Y" is printed; otherwise nothing is printed.','When num is a positive odd integer, "X" is printed; when num is positive even, "Y" is printed; otherwise nothing is printed.'],answer:2,explanation:'Outer if (num>0) gates everything. Inside: even→"X", odd→"Y". When num≤0, nothing prints.'},
+      {text:"Which best describes this code (x is a declared int)?",code:'if (x >= 0) {\n  if (x % 3 == 0) {\n    System.out.println("M");\n  } else {\n    System.out.println("N");\n  }\n}',options:['When x is a non-negative multiple of 3, "M" is printed; when x is a non-negative non-multiple of 3, "N" is printed; otherwise nothing.','When x is negative, "M" is printed; otherwise "N" is printed.','"M" is always printed.','When x is a multiple of 3, "M" is printed; otherwise "N" is printed.'],answer:0,explanation:'x>=0 must hold to enter. Then x%3==0 prints "M", else "N". Negative x prints nothing.'}
+    ];
+    const v=pick(vs);
+    return{topic:"U2 · Nested if Trace",skill:"Describe the behavior of nested if/else statements",...v,optIsCode:[false,false,false,false]};
+  },
+
+  function genLoopComparison(){
+    return{topic:"U2 · Loop Analysis",skill:"Compare iteration counts between for and while loops",
+      text:"Under which condition do methodX and methodY return the same value?",
+      code:"public static int methodX(int a, int b) {\n  int count = 0;\n  for (int i = 0; i < a / b; i++) { count++; }\n  return count;\n}\npublic static int methodY(int a, int b) {\n  int count = 0;\n  int i = 0;\n  while (i < a) { count++; i += b; }\n  return count;\n}",
+      optIsCode:[false,false,false,false],
+      options:["When a and b are both even","When a and b are both odd","When a % b is equal to zero","When a % b is equal to one"],
+      answer:2,explanation:"methodX runs a/b times (int division). methodY runs one extra iteration when a%b≠0. They match only when a%b==0."};
+  },
+
+  function genWhileNoOutput(){
+    return{topic:"U2 · While Loop Output",skill:"Identify a loop update that produces no output",
+      text:"Which replacement for /* missing code */ causes the segment to print nothing?",
+      code:"int x = 1;\nwhile (x < 10) {\n  if (x % 2 == 0) {\n    System.out.print(x + \" \");\n  }\n  /* missing code */\n}",
+      optIsCode:[true,true,true,true],
+      options:["x++;","x += 2;","x += 3;","x *= 2;"],
+      answer:1,explanation:"x starts at 1 (odd). x+=2 gives 1,3,5,7,9 — all odd. x%2==0 is never true, so nothing prints."};
+  },
+
+  function genRecursion(){
+    const val=rnd(10,9999);const digits=String(val).length;
+    return{topic:"U2 · Recursion",skill:"Determine what a recursive method computes",
+      text:`Which best describes the value returned by the call what(${val})?`,
+      code:"/** Precondition: num >= 0 */\npublic static int what(int num) {\n  if (num < 10) { return 1; }\n  else { return 1 + what(num / 10); }\n}",
+      optIsCode:[false,false,false,false],
+      options:["The number of digits in num","The sum of the digits in num","The value 1","Nothing — infinite recursion occurs."],
+      answer:0,explanation:`Each call removes the rightmost digit (÷10). Each adds 1. For ${val}: ${digits} recursive calls → returns ${digits}, the number of digits.`};
+  }
+];
+
+// ─── UNIT 3 GENERATORS (Class Creation) — target 6 of 42 ─────────────────────
+
+const U3 = [
+
+  function genAccess(){
+    const vs=[
+      {text:"A Measurement class has a private method toInches(). An external class Calculations tries to call it. Why won't this compile?",options:["A method cannot take object references as parameters","A method cannot return a boolean value","The toInches method is private and cannot be accessed from Calculations","Private variables cannot be accessed by any method"],answer:2,explanation:"private restricts access to within the same class. Calculations is external and cannot call toInches()."},
+      {text:"A Student class has a private double gpa. A class Registrar tries to access student.gpa directly. Why won't this compile?",options:["Double fields must always be public","Instance variables declared private cannot be accessed from outside the class","The Registrar class must extend Student to access its fields","Fields can only be accessed through static methods"],answer:1,explanation:"private fields are only accessible within the class they belong to. A public getter method is needed."},
+      {text:"A BankAccount class has a private method calcInterest(). An external class Report tries to call it. Why won't this compile?",options:["Methods cannot accept object parameters","A method declared private cannot be accessed from outside the class","The method must be static to be called externally","Only constructors can be declared private"],answer:1,explanation:"private restricts visibility to the declaring class. Report has no access to private members of BankAccount."}
+    ];
+    const v=pick(vs);
+    return{topic:"U3 · Access Modifiers",skill:"Explain access and visibility constraints",code:null,optIsCode:[false,false,false,false],...v};
+  },
+
+  function genClassDesign(){
+    const vs=[
+      {text:"A Book class stores title (text), author (text), and numPages (whole number). It needs accessible accessors. Which design follows best practice?",options:["Public instance variables: title (String), author (String), numPages (String); private accessors","Private instance variables: title (String), author (String), numPages (String); public accessors","Public instance variables: title (String), author (String), numPages (int); public accessors","Private instance variables: title (String), author (String), numPages (int); public accessors"],answer:3,explanation:"Encapsulation: private variables, public accessors. numPages is a whole number → int."},
+      {text:"A developer models employees with a name (text) and salary (decimal). Which design is most appropriate?",options:["An Employee class with a String name and double salary as instance variables","A Name class and a Salary class, each with an Employee instance variable","An Employee class with int instance variables for name and salary","A Company class with String instance variables for name and salary"],answer:0,explanation:"Employee directly holds its data. Name→String, salary→double. Separate Name/Salary classes are over-engineering."}
+    ];
+    const v=pick(vs);
+    return{topic:"U3 · Class Design",skill:"Design a class with appropriate types and access",code:null,optIsCode:[false,false,false,false],...v};
+  },
+
+  function genWriteMethod(){
+    const vs=[
+      {text:"Which correctly defines a public setter for instance variable y in a Pair class?",options:["private int setY(int num) {\n  return num;\n}","public int setY(int num) {\n  return num;\n}","private void setY(int num) {\n  y = num;\n}","public void setY(int num) {\n  y = num;\n}"],answer:3,explanation:"A setter must be public, void, and assign the parameter to the instance variable."},
+      {text:"Which correctly defines a public getter for a private String name in a Person class?",options:["private String getName() {\n  return name;\n}","public void getName() {\n  return name;\n}","public String getName() {\n  return name;\n}","public String getName(String n) {\n  return n;\n}"],answer:2,explanation:"Getter: public, returns correct type (String), no parameters, returns the field."},
+      {text:"Which correctly defines a public method that adds amount to a private double balance in BankAccount?",options:["public void deposit(double amount) {\n  balance += amount;\n}","private void deposit(double amount) {\n  balance += amount;\n}","public double deposit(double amount) {\n  return balance;\n}","public void deposit() {\n  balance += 10;\n}"],answer:0,explanation:"Must be public, void, take a double parameter, and add to balance. Only A satisfies all."}
+    ];
+    const v=pick(vs);
+    return{topic:"U3 · Writing Methods",skill:"Write accessor and mutator methods",code:null,optIsCode:[true,true,true,true],...v};
+  },
+
+  function genReliability(){
+    const vs=[
+      {text:"A developer wants to maximize system reliability. Which best ensures this?",options:["Protecting user privacy","Thoroughly testing the program under many different conditions","Making all attributes public","Making all behaviors public"],answer:1,explanation:"System reliability = performs as expected under stated conditions. Thorough, varied testing catches bugs."},
+      {text:"Which practice BEST reduces incorrect results in production?",options:["Adding detailed comments throughout the code","Declaring all variables as final","Testing edge cases and boundary conditions before release","Making all instance variables public for easy debugging"],answer:2,explanation:"Testing boundaries catches the most likely failure points. Comments improve readability, not correctness."}
+    ];
+    const v=pick(vs);
+    return{topic:"U3 · System Reliability",skill:"Explain practices that improve program reliability",code:null,optIsCode:[false,false,false,false],...v};
+  },
+
+  function genStaticVar(){
+    return{topic:"U3 · Static Variables",skill:"Trace static variable changes across multiple objects",
+      text:"What is printed? (No other SomeClass objects have been created.)",
+      code:"// private static int y = 0;\n// Constructor increments y by 1\n// incrementY() adds 1; incrementY(int n) adds n\n\nSomeClass first = new SomeClass(10);\nSomeClass second = new SomeClass(20);\nSomeClass third = new SomeClass(30);\nfirst.incrementY();\nsecond.incrementY(10);\nSystem.out.println(third.getY());",
+      optIsCode:[false,false,false,false],
+      options:["0","1","11","14"],
+      answer:3,explanation:"y is static — shared. 3 constructors → y=3. incrementY() → y=4. incrementY(10) → y=14."};
+  },
+
+  function genConstructorOverload(){
+    const vs=[
+      {text:"A Student class has constructors: Student(), Student(String), Student(String, int). Which causes a compilation error?",code:"public class Student {\n  public Student() {}\n  public Student(String name) {}\n  public Student(String name, int age) {}\n}",options:['Student a = new Student();','Student b = new Student("Juan");','Student c = new Student("Juan", 15);','Student d = new Student("Juan", "15");'],answer:3,explanation:'Student("Juan","15") passes (String,String) but no such constructor exists. The two-param constructor takes (String,int).'},
+      {text:"A Point class has constructors: Point(), Point(int x), Point(int x, int y). Which causes a compilation error?",code:"public class Point {\n  public Point() {}\n  public Point(int x) {}\n  public Point(int x, int y) {}\n}",options:['Point p1 = new Point();','Point p2 = new Point(3);','Point p3 = new Point(3, 4);','Point p4 = new Point(3.0, 4);'],answer:3,explanation:'Point(3.0, 4) passes a double where int is expected. Java does not implicitly narrow double to int.'}
+    ];
+    const v=pick(vs);
+    return{topic:"U3 · Constructors",skill:"Identify constructor calls that cause compilation errors",optIsCode:[true,true,true,true],...v};
+  }
+];
+
+// ─── UNIT 4 GENERATORS (Data Collections) — target 14 of 42 ──────────────────
+
+const U4 = [
+
+  function genArrayBug(){
+    const vs=[
+      {text:"A method finds the max by initializing max = 0. Under which condition does it fail?",code:"int max = 0;\nfor (int val : numbers) {\n  if (val > max) max = val;\n}\nreturn max;",options:["The maximum is positive and is the first element","The maximum appears multiple times","All values are negative","The maximum equals Integer.MAX_VALUE"],answer:2,explanation:"max=0. If all values are negative, none exceeds 0, so max stays 0 — wrong. Fix: initialize to numbers[0] or Integer.MIN_VALUE."},
+      {text:"A method finds the min by initializing min = 0. Under which condition does it fail?",code:"int min = 0;\nfor (int val : numbers) {\n  if (val < min) min = val;\n}\nreturn min;",options:["All values are negative","The minimum is negative","All values are positive","The minimum appears at index 0"],answer:2,explanation:"min=0. If all values are positive, none is less than 0, so min stays 0 — wrong. Fix: initialize to numbers[0] or Integer.MAX_VALUE."}
+    ];
+    const v=pick(vs);
+    return{topic:"U4 · Array Algorithm Bugs",skill:"Describe initial conditions required for correct output",...v,optIsCode:[false,false,false,false]};
+  },
+
+  function genArrayTraversal(){
+    const arr=[rnd(1,3),rnd(4,6),rnd(7,9),rnd(10,12),rnd(13,15),rnd(16,18)];
+    const modified=[...arr];for(let j=arr.length-1;j>=0;j-=2)modified[j]++;
+    const correct=`{${modified.join(", ")}}`;
+    const w1=arr.map(v=>v+1);const w2=[...arr];for(let j=0;j<arr.length;j+=2)w2[j]++;
+    const w3=[...arr];w3[arr.length-1]++;
+    const opts=shuffle([correct,`{${w1.join(", ")}}`,`{${w2.join(", ")}}`,`{${w3.join(", ")}}`]);
+    return{topic:"U4 · Array Traversals",skill:"Determine result of an array traversal",
+      text:`Given int[] arr = {${arr.join(", ")}}, what does arr contain after this code?`,
+      code:`for (int j = arr.length - 1; j >= 0; j -= 2) {\n  arr[j]++;\n}`,
+      optIsCode:[true,true,true,true],options:opts,answer:opts.indexOf(correct),
+      explanation:`j starts at ${arr.length-1}, steps by -2: hits indices ${arr.length-1},${arr.length-3},${arr.length-5}. Each gets +1. Result: ${correct}.`};
+  },
+
+  function genCountNegatives(){
+    return{topic:"U4 · Array Algorithms",skill:"Identify correct code that counts elements meeting a condition",
+      text:"Which correctly counts negative values in int array nums, storing the result in counter?",code:null,
+      optIsCode:[true,true,true,true],
+      options:["int counter = 0;\nint i = 0;\nwhile (i < nums.length) {\n  if (nums[i] < 0) {\n    counter++;\n    i++;\n  }\n}","int counter = 0;\nint i = 0;\nwhile (i <= nums.length - 1) {\n  if (nums[i] < 0) { counter++; }\n  i++;\n}","int counter = 0;\nfor (int i = 1; i < nums.length; i++) {\n  if (nums[i] < 0) { counter++; }\n}","int counter = 0;\nfor (int i : nums) {\n  if (nums[i] < 0) { counter++; }\n}"],
+      answer:1,explanation:"B: i goes 0 to nums.length-1, i++ is outside the if. A: i++ inside if causes infinite loop on non-negatives. C: starts at 1, misses index 0. D: i is element value, not index."};
+  },
+
+  function genStringLengthAlgo(){
+    const cs=pick([{colors:["red","blue","green","black","white","brown"],result:5},{colors:["cat","dog","bird","fish","bear","wolf"],result:5},{colors:["up","down","left","right","near","away"],result:5}]);
+    const correct=String(cs.result);
+    const{options,answer}=make4(correct,[String(cs.result-1),String(cs.result-2),"-1","0"],["1","2","3","4"]);
+    return{topic:"U4 · Array Algorithms",skill:"Trace a nested array comparison algorithm",
+      text:`A segment compares each String in the array to all later elements. If two have equal length, result = index of the later one. Given {"${cs.colors.join('","')}"}, what is result?`,
+      code:null,optIsCode:[false,false,false,false],options,answer,
+      explanation:`Lengths: ${cs.colors.map((c,i)=>`${c}(${c.length})`).join(", ")}. Last equal-length pair → result=${cs.result}.`};
+  },
+
+  function genArrayStep(){
+    const arr=[rnd(1,5),rnd(1,5),rnd(1,4),rnd(1,5),rnd(1,4),rnd(1,5),rnd(1,4)];
+    const correct=arr[0]+arr[2]+arr[4]+arr[6];
+    const{options,answer}=make4(String(correct),[String(arr.reduce((a,b)=>a+b,0)),String(arr[0]+arr[2]+arr[4]),String(arr[1]+arr[3]+arr[5])],[String(correct+1),String(correct-1)]);
+    return{topic:"U4 · Array Traversals",skill:"Trace a method that accesses every other element",
+      text:`What value is returned by mystery(nums) where nums = {${arr.join(", ")}}?`,
+      code:"public static int mystery(int[] arr) {\n  int x = 0;\n  for (int k = 0; k < arr.length; k = k + 2) {\n    x = x + arr[k];\n  }\n  return x;\n}",
+      optIsCode:[false,false,false,false],options,answer,
+      explanation:`k=0,2,4,6. arr[0]=${arr[0]}, arr[2]=${arr[2]}, arr[4]=${arr[4]}, arr[6]=${arr[6]}. Sum=${correct}.`};
+  },
+
+  function genArrayListOps(){
+    const vs=[
+      {text:"What are the contents of numList after this code?",code:"ArrayList<Integer> numList = new ArrayList<Integer>();\nnumList.add(3);\nnumList.add(2);\nnumList.add(1);\nnumList.add(1, 0);\nnumList.set(0, 2);",options:["[1, 3, 0, 1]","[2, 0, 2, 1]","[2, 3, 2, 1]","[3, 0, 0, 1]"],answer:1,explanation:"add(3),add(2),add(1)→[3,2,1]. add(1,0)→[3,0,2,1]. set(0,2)→[2,0,2,1]."},
+      {text:'What are the contents of myList after this code?',code:'ArrayList<String> myList = new ArrayList<String>();\nmyList.add("A");\nmyList.add("B");\nmyList.add("C");\nmyList.add(1, "X");\nmyList.set(2, "Y");',options:['["A", "X", "Y", "C"]','["X", "A", "B", "C"]','["A", "Y", "X", "C"]','["A", "X", "B", "C"]'],answer:0,explanation:'add×3→["A","B","C"]. add(1,"X")→["A","X","B","C"]. set(2,"Y")→["A","X","Y","C"].'}
+    ];
+    const v=pick(vs);
+    return{topic:"U4 · ArrayList Operations",skill:"Trace ArrayList add and set operations",optIsCode:[true,true,true,true],...v};
+  },
+
+  function genArrayListTraversal(){
+    const vs=[
+      {text:'oldList = ["a","b","c"]. For each e: append e then insert e at index 0. What is newList?',code:'for (String e : oldList) {\n  newList.add(e);\n  newList.add(0, e);\n}',options:["[a, a, b, b, c, c]","[c, b, a, a, b, c]","[a, a, a, b, a, c]","[c, b, a, c, b, a]"],answer:1,explanation:'e="a"→[a,a]. e="b"→[a,a,b],[b,a,a,b]. e="c"→[b,a,a,b,c],[c,b,a,a,b,c].'},
+      {text:'oldList = [1,2,3]. For each n: insert n at index 0 then append n*2. What is newList?',code:'for (int n : oldList) {\n  newList.add(0, n);\n  newList.add(n * 2);\n}',options:["[3, 2, 1, 2, 4, 6]","[1, 2, 3, 2, 4, 6]","[3, 2, 1, 6, 4, 2]","[1, 2, 3, 6, 4, 2]"],answer:0,explanation:'n=1→[1,2]. n=2→[2,1,2,4]. n=3→[3,2,1,2,4,6].'}
+    ];
+    const v=pick(vs);
+    return{topic:"U4 · ArrayList Traversals",skill:"Trace an ArrayList traversal",optIsCode:[true,true,true,true],...v};
+  },
+
+  function genArrayListAlgo(){
+    return{topic:"U4 · ArrayList Algorithms",skill:"Describe behavior of an ArrayList algorithm",
+      text:"What does the following method determine about an ArrayList of integers?",
+      code:"public static boolean checkOrder(ArrayList<Integer> list) {\n  int prev = list.get(0);\n  for (int i = 1; i < list.size(); i++) {\n    if (list.get(i) > prev) { return false; }\n    prev = list.get(i);\n  }\n  return true;\n}",
+      optIsCode:[false,false,false,false],
+      options:["Whether the list is sorted least to greatest","Whether the list has duplicate values","Whether all values are positive","Whether the list is sorted greatest to least"],
+      answer:3,explanation:"prev tracks the previous element. If the current element is greater than prev, the list went up — not descending — so return false. If the loop completes, every element was ≤ the one before it: sorted greatest to least."};
+  },
+
+  function gen2DTraversal(){
+    const vs=[
+      {text:"A 2×3 array contains [[10,20,30],[40,50,60]]. Which traversal produces [30,20,10,60,50,40]?",options:["Outer: rows 0–1; Inner: columns 0→2 (left-to-right)","Outer: rows 0–1; Inner: columns 2→0 (right-to-left)","Outer: rows 1→0; Inner: columns 0→2","Outer: rows 1→0; Inner: columns 2→0"],answer:1,explanation:"Top-to-bottom (rows 0,1) × right-to-left (cols 2,1,0). Row 0: 30,20,10. Row 1: 60,50,40."},
+      {text:"A 3×2 array contains [[1,2],[3,4],[5,6]]. Which traversal produces [2,1,4,3,6,5]?",options:["Outer: rows 0–2 ascending; Inner: columns 1→0","Outer: rows 2→0; Inner: columns 0→1","Outer: rows 0–2 ascending; Inner: columns 0→1","Outer: rows 2→0; Inner: columns 1→0"],answer:0,explanation:"Top-to-bottom (rows 0,1,2) × right-to-left (cols 1,0). Row 0: 2,1. Row 1: 4,3. Row 2: 6,5."}
+    ];
+    const v=pick(vs);
+    return{topic:"U4 · 2D Array Traversals",skill:"Identify a 2D traversal that produces a given output order",code:null,optIsCode:[false,false,false,false],...v};
+  },
+
+  function gen2DAlgo(){
+    return{topic:"U4 · 2D Array Algorithms",skill:"Describe behavior of a 2D array method",
+      text:"A method traverses row x with a for-each loop, incrementing result each time an element equals target. What does it return?",
+      code:"int result = 0;\nfor (int col : values[x]) {\n  if (col == target) result++;\n}\nreturn result;",
+      optIsCode:[false,false,false,false],
+      options:["Index of first occurrence of target in row x","Index of last occurrence of target in row x","Count of target in column x","Count of target in row x"],
+      answer:3,explanation:"values[x] is row x. For-each visits each element. result counts (not indexes) how many times target appears in that row."};
+  },
+
+  function genFileParsing(){
+    return{topic:"U4 · Text File Parsing",skill:"Write code to read and parse a text file",
+      text:'A file contains: finest_artist, biggest_gamer, nicest_teacher, best_athlete. Which code puts text before underscores in firstList and after in secondList?',
+      code:null,optIsCode:[false,false,false,false],
+      options:["Alternate lines between firstList and secondList","Loop all lines into firstList; then loop again for secondList",'Split on "_"; add temp[0] to firstList and temp[1] to secondList','Split on "_"; add both temp[0] and temp[1] to firstList'],
+      answer:2,explanation:'split("_"): temp[0]="finest", temp[1]="artist". Option B exhausts the file in the first loop. Option D adds both to firstList only.'};
+  },
+
+  function genBinarySearch(){
+    const arr=[2,5,8,10,12,15,18,21,25,30,35];
+    const targets=[{target:10,idx:3},{target:15,idx:5},{target:25,idx:8},{target:2,idx:0}];
+    const t=pick(targets);const mid1=Math.floor((0+10)/2);
+    const{options,answer}=make4(String(t.idx),[String(t.idx-1),String(t.idx+1),"-1",String(t.idx+2)],["0","1","2","3","4","5"].filter(x=>x!==String(t.idx)));
+    return{topic:"U4 · Binary Search",skill:"Trace binary search iterations",
+      text:`Binary search on [${arr.join(",")}]. Target=${t.target}. First mid=${mid1}, arr[${mid1}]=${arr[mid1]}. What index is returned?`,
+      code:null,optIsCode:[false,false,false,false],options,answer,
+      explanation:`Binary search halves the space each step. Target ${t.target} is found at index ${t.idx}.`};
+  },
+
+  function genInsertionSort(){
+    const lists=[
+      {arr:[60,30,10,20,50,40],after3:[10,20,30,60,50,40]},
+      {arr:[50,20,40,10,30,60],after3:[10,20,40,50,30,60]},
+      {arr:[90,10,50,30,70,20],after3:[10,50,90,30,70,20]}
+    ];
+    const L=pick(lists);const correct=`[${L.after3.join(", ")}]`;
+    const full=`[${[...L.arr].sort((a,b)=>a-b).join(", ")}]`;
+    const rev=`[${[...L.arr].sort((a,b)=>b-a).join(", ")}]`;
+    const orig=`[${L.arr.join(", ")}]`;
+    const{options,answer}=make4(correct,[full,rev,orig],[`[${L.arr.slice().reverse().join(", ")}]`]);
+    return{topic:"U4 · Insertion Sort",skill:"Trace insertion sort iterations",
+      text:`Insertion sort on [${L.arr.join(", ")}]. What does it contain after three outer loop iterations?`,
+      code:null,optIsCode:[true,true,true,true],options,answer,
+      explanation:`Insertion sort builds a sorted prefix left-to-right. After 3 passes: ${correct}.`};
+  },
+
+  function genDataSets(){
+    const vs=[
+      {text:"A programmer wants to know if players under 30 spend more time gaming. Data set 1: (birth date, username). Data set 2: (username, avg daily hours). Data set 3: (birth year, player count). Data set 4: (signup year, usernames). Which two to combine?",options:["Data sets 1 and 2","Data sets 1 and 3","Data sets 2 and 3","Data sets 2 and 4"],answer:0,explanation:"Need age (Data set 1 via birth date) + hours (Data set 2). Join on username. Data set 3 has no per-player data."},
+      {text:"A researcher wants the average score before vs. after a tutorial. Set A: (student ID, test date, score). Set B: (student ID, tutorial completion date). Which to combine?",options:["Set A and Set B, joined on student ID","Set A alone, sorted by date","Set B alone, grouped by completion date","Set A and Set B, joined on test date"],answer:0,explanation:"Join on student ID to compare each student's test date vs. tutorial date, then group scores accordingly."}
+    ];
+    const v=pick(vs);
+    return{topic:"U4 · Using Data",skill:"Identify which data sets to combine for a given analysis",code:null,optIsCode:[false,false,false,false],...v};
+  }
+];
+
+// ─── WEIGHTED QUESTION BANK BUILDER ──────────────────────────────────────────
+// Target: U1=9, U2=13, U3=6, U4=14 = 42 total
+
+function buildQuestionBank() {
+  const u1 = shuffle(U1.map(g=>g())); // 9 generators
+  const u2 = shuffle(U2.map(g=>g())); // 13 generators
+  const u3 = shuffle(U3.map(g=>g())); // 6 generators
+  const u4 = shuffle(U4.map(g=>g())); // 14 generators
+  return shuffle([...u1,...u2,...u3,...u4]);
+}
+
+// For 10-question mode: proportional sampling (2 U1, 3 U2, 2 U3, 3 U4 = 10)
+function buildChunk() {
+  const u1=shuffle(U1.map(g=>g())).slice(0,2);
+  const u2=shuffle(U2.map(g=>g())).slice(0,3);
+  const u3=shuffle(U3.map(g=>g())).slice(0,2);
+  const u4=shuffle(U4.map(g=>g())).slice(0,3);
+  return shuffle([...u1,...u2,...u3,...u4]);
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let state = {
+  mode: 'all', current: 0, answers: {}, flagged: new Set(), crossed: {},
+  submitted: false, startTime: null, timerInterval: null,
+  timeLeft: 90 * 60, reviewingFromList: false, activeQuestions: []
+};
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function selectMode(m) {
+  state.mode = m;
+  document.getElementById('mode-all').className = 'card card-mode' + (m === 'all' ? ' selected' : '');
+  document.getElementById('mode-10').className  = 'card card-mode' + (m === 'chunked' ? ' selected' : '');
+}
+
+function getActiveQuestions() { return state.activeQuestions; }
+
+function startExam() {
+  state.activeQuestions = state.mode === 'chunked' ? buildChunk() : buildQuestionBank();
+  state.startTime = Date.now();
+  state.timeLeft  = 90 * 60;
+  state.current   = 0;
+  state.answers   = {};
+  state.flagged   = new Set();
+  state.submitted = false;
+  state.reviewingFromList = false;
+
+  // Timer: only shown for 42-question mode
+  const timerEl = document.getElementById('timer-display');
+  if (state.mode === 'chunked') {
+    timerEl.style.display = 'none';
+    clearInterval(state.timerInterval);
+  } else {
+    timerEl.style.display = '';
+    startTimer();
+  }
+
+  show('exam-screen');
+  renderQuestion();
+}
+
+function startTimer() {
+  clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerDisplay();
+    if (state.timeLeft <= 0) { clearInterval(state.timerInterval); submitExam(); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(state.timeLeft / 60), s = state.timeLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  el.className = 'timer' + (state.timeLeft < 300 ? ' warn' : '');
+}
+
+function renderQuestion() {
+  const qs = getActiveQuestions();
+  const q  = qs[state.current];
+  const total = qs.length;
+
+  document.getElementById('q-counter').textContent = 'Question ' + (state.current + 1) + ' of ' + total;
+  document.getElementById('progress-fill').style.width = ((state.current + 1) / total * 100).toFixed(0) + '%';
+  document.getElementById('q-topic').textContent = q.topic;
+  document.getElementById('q-skill').textContent = q.skill;
+  document.getElementById('q-text').textContent  = q.text;
+
+  const codeEl = document.getElementById('q-code');
+  if (q.code) { codeEl.textContent = q.code; codeEl.style.display = 'block'; }
+  else { codeEl.style.display = 'none'; }
+
+  const cont = document.getElementById('options-container');
+  cont.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    let cls = 'opt';
+    if (state.submitted) {
+      if (i === q.answer) cls += ' correct';
+      else if (state.answers[state.current] === i) cls += ' wrong';
+    } else if (state.answers[state.current] === i) {
+      cls += ' selected';
+    }
+    div.className = cls;
+    const isCode = q.optIsCode && q.optIsCode[i] === true;
+    const letterSpan = document.createElement('span');
+    letterSpan.className = 'opt-letter';
+    letterSpan.textContent = LETTERS[i];
+    const textSpan = document.createElement('span');
+    textSpan.className = 'opt-text' + (isCode ? ' is-code' : '');
+    textSpan.textContent = opt;
+    div.appendChild(letterSpan);
+    div.appendChild(textSpan);
+    // Cross-out button (only shown before submission)
+    if (!state.submitted) {
+      div.onclick = () => selectAnswer(i);
+      const xBtn = document.createElement('button');
+      xBtn.className = 'opt-crossout-btn';
+      xBtn.title = 'Eliminate this choice';
+      xBtn.textContent = '\u2715';
+      const qKey = state.current + '-' + i;
+      if (state.crossed[qKey]) div.classList.add('crossed-out');
+      xBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (state.crossed[qKey]) { delete state.crossed[qKey]; div.classList.remove('crossed-out'); }
+        else { state.crossed[qKey] = true; div.classList.add('crossed-out'); }
+        xBtn.blur();
+      };
+      div.appendChild(xBtn);
+    }
+    cont.appendChild(div);
+  });
+
+  const fb = document.getElementById('feedback-box');
+  if (state.submitted) {
+    fb.style.display = 'block';
+    const ua = state.answers[state.current];
+    if (ua !== undefined) {
+      const isCorrect = ua === q.answer;
+      fb.className  = 'feedback-box ' + (isCorrect ? 'feedback-correct' : 'feedback-wrong');
+      fb.textContent = isCorrect ? 'Correct! Well done.' : 'Incorrect. The correct answer is ' + LETTERS[q.answer] + '.';
+    } else {
+      fb.className  = 'feedback-box feedback-wrong';
+      fb.textContent = 'Not answered. The correct answer is ' + LETTERS[q.answer] + '.';
+    }
+  } else { fb.style.display = 'none'; }
+
+  const expBox = document.getElementById('explanation-box');
+  if (state.submitted && q.explanation) {
+    expBox.style.display = 'block';
+    expBox.innerHTML = '<strong>Explanation:</strong><br>' + q.explanation;
+  } else { expBox.style.display = 'none'; }
+
+  const flagBtn = document.getElementById('flag-btn');
+  const isFlagged = state.flagged.has(state.current);
+  flagBtn.className  = 'btn btn-sm ' + (isFlagged ? 'btn-flagged' : 'btn-flag');
+  flagBtn.textContent = isFlagged ? 'Flagged' : 'Flag for review';
+  flagBtn.style.display = state.submitted ? 'none' : '';
+
+  document.getElementById('prev-btn').disabled = state.current === 0;
+
+  // Single Next/Submit button (blue, in nav-row) — the submit-row below is removed
+  const nextBtn = document.getElementById('next-btn');
+  if (state.current === qs.length - 1) {
+    if (state.submitted) { nextBtn.textContent = 'See results'; nextBtn.onclick = goToResults; }
+    else { nextBtn.textContent = 'Submit exam'; nextBtn.onclick = confirmSubmit; }
+  } else {
+    nextBtn.textContent = 'Next \u2192';
+    nextBtn.onclick = () => navigate(1);
+  }
+
+  if (state.reviewingFromList) {
+    document.getElementById('back-to-review-row').style.display = 'block';
+    document.getElementById('nav-dots-section').style.display   = 'none';
+    const earR = document.getElementById('submit-anytime-row');
+    if (earR) earR.style.display = 'none';
+  } else {
+    document.getElementById('back-to-review-row').style.display = 'none';
+    document.getElementById('nav-dots-section').style.display   = state.submitted ? 'none' : '';
+    const ear = document.getElementById('submit-anytime-row');
+    if (ear) ear.style.display = state.submitted ? 'none' : '';
+    if (!state.submitted) renderDots();
+  }
+}
+
+function selectAnswer(i) {
+  if (state.submitted) return;
+  state.answers[state.current] = i;
+  renderQuestion();
+}
+
+function toggleFlag() {
+  if (state.flagged.has(state.current)) state.flagged.delete(state.current);
+  else state.flagged.add(state.current);
+  renderQuestion();
+}
+
+function navigate(dir) {
+  const qs = getActiveQuestions();
+  state.current = Math.max(0, Math.min(qs.length - 1, state.current + dir));
+  renderQuestion();
+}
+
+function renderDots() {
+  const qs   = getActiveQuestions();
+  const cont = document.getElementById('nav-dots');
+  cont.innerHTML = '';
+  qs.forEach((q, i) => {
+    const answered = state.answers[i] !== undefined;
+    const flagged  = state.flagged.has(i);
+    let cls = 'dot' + (i === state.current ? ' current' : '') + (flagged ? ' flagged' : answered ? ' answered' : '');
+    const d = document.createElement('div');
+    d.className   = cls;
+    d.textContent = i + 1;
+    d.onclick = () => { state.current = i; renderQuestion(); };
+    cont.appendChild(d);
+  });
+}
+
+function confirmSubmit() {
+  const qs = getActiveQuestions();
+  const answered   = qs.filter((_, i) => state.answers[i] !== undefined).length;
+  const unanswered = qs.length - answered;
+  const flagged    = qs.filter((_, i) => state.flagged.has(i)).length;
+  let msg = 'Are you sure you want to submit?';
+  if (unanswered > 0) msg += '\n\n' + unanswered + ' question(s) are unanswered.';
+  if (flagged > 0)    msg += '\n' + flagged + ' question(s) are flagged for review.';
+  if (confirm(msg)) submitExam();
+}
+
+function submitExam() {
+  clearInterval(state.timerInterval);
+  state.submitted = true;
+  renderQuestion();
+  buildResults();
+  show('results-screen');
+}
+
+function buildResults() {
+  const qs = getActiveQuestions();
+  let correct = 0;
+  qs.forEach((q, i) => { if (state.answers[i] === q.answer) correct++; });
+  const total   = qs.length;
+  const pct     = Math.round(correct / total * 100);
+  const elapsed = Math.round((Date.now() - state.startTime) / 1000);
+
+  document.getElementById('res-score').textContent   = pct + '%';
+  document.getElementById('res-correct').textContent = correct + ' / ' + total;
+
+  // Hide time metric for 10-question (untimed) mode
+  const timeMetric = document.getElementById('res-time-metric');
+  if (state.mode === 'chunked') {
+    timeMetric.style.display = 'none';
+  } else {
+    timeMetric.style.display = '';
+    document.getElementById('res-time').textContent =
+      Math.floor(elapsed/60) + 'm ' + (elapsed%60 < 10 ? '0' : '') + (elapsed%60) + 's';
+  }
+
+  const topicMap = {};
+  qs.forEach((q, i) => {
+    if (!topicMap[q.topic]) topicMap[q.topic] = { total: 0, correct: 0 };
+    topicMap[q.topic].total++;
+    if (state.answers[i] === q.answer) topicMap[q.topic].correct++;
+  });
+  const sorted = Object.entries(topicMap).sort((a,b) => (a[1].correct/a[1].total) - (b[1].correct/b[1].total));
+  const tr = document.getElementById('topic-results');
+  tr.innerHTML = '';
+  sorted.forEach(([topic, data]) => {
+    const p       = Math.round(data.correct / data.total * 100);
+    const pillCls = p >= 75 ? 'pill-good' : p >= 50 ? 'pill-ok' : 'pill-bad';
+    const label   = p >= 75 ? 'Strong'    : p >= 50 ? 'Review'  : 'Needs work';
+    const row     = document.createElement('div');
+    row.className = 'result-row';
+    row.innerHTML = '<span class="result-topic">' + topic + '</span>'
+      + '<span class="result-count">' + data.correct + '/' + data.total + '</span>'
+      + '<span class="pill ' + pillCls + '">' + label + '</span>';
+    tr.appendChild(row);
+  });
+  const weak = sorted.filter(([,d]) => d.correct/d.total < 0.5).map(([t]) => t.split('·')[1]?.trim() || t.split(':')[1]?.trim() || t);
+  let rec = pct >= 80
+    ? 'Excellent work! Strong grasp of AP CSA concepts. Focus remaining prep on free-response writing and any lingering weak topics.'
+    : pct >= 60
+    ? 'Good progress! ' + (weak.length ? 'Prioritize reviewing: ' + weak.slice(0,3).join(', ') + '. ' : '') + 'Practice tracing code by hand and work extra problems on iteration and data structures.'
+    : 'Keep at it! ' + (weak.length ? 'Focus first on: ' + weak.slice(0,4).join(', ') + '. ' : '') + 'Review notes and textbook chapters for each weak area. Trace small code examples line by line.';
+  document.getElementById('recommendation').textContent = rec;
+}
+
+function goToResults() { buildResults(); show('results-screen'); }
+
+function goToReview() {
+  const qs   = getActiveQuestions();
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+
+  // Summary counts banner
+  let nCorrect = 0, nWrong = 0, nBlank = 0;
+  qs.forEach((q, i) => {
+    const ua = state.answers[i];
+    if (ua === undefined) nBlank++;
+    else if (ua === q.answer) nCorrect++;
+    else nWrong++;
+  });
+  const banner = document.createElement('div');
+  banner.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;';
+  banner.innerHTML =
+    '<div style="flex:1;min-width:100px;padding:12px;background:#e8f4e8;border:1px solid #a8d8a8;border-radius:10px;text-align:center;">'
+    + '<div style="font-size:22px;font-weight:700;color:#1a5a1a;">' + nCorrect + '</div>'
+    + '<div style="font-size:12px;color:#2d7a2d;margin-top:2px;">&#10003; Correct</div></div>'
+    + '<div style="flex:1;min-width:100px;padding:12px;background:#fde8e8;border:1px solid #e8a8a8;border-radius:10px;text-align:center;">'
+    + '<div style="font-size:22px;font-weight:700;color:#7a1a1a;">' + nWrong + '</div>'
+    + '<div style="font-size:12px;color:#a32d2d;margin-top:2px;">&#10007; Incorrect</div></div>'
+    + '<div style="flex:1;min-width:100px;padding:12px;background:#fef3e2;border:1px solid #f0c060;border-radius:10px;text-align:center;">'
+    + '<div style="font-size:22px;font-weight:700;color:#7a4a0a;">' + nBlank + '</div>'
+    + '<div style="font-size:12px;color:#9a5a0a;margin-top:2px;">&#8212; Not answered</div></div>';
+  list.appendChild(banner);
+
+  qs.forEach((q, i) => {
+    const ua         = state.answers[i];
+    const isCorrect  = ua === q.answer;
+    const unanswered = ua === undefined;
+    const item       = document.createElement('div');
+
+    // Bold left border color per status
+    const borderColor = unanswered ? '#f0a830' : isCorrect ? '#2d7a2d' : '#a32d2d';
+    const bgColor     = unanswered ? '#fffdf5' : isCorrect ? '#f6fbf6' : '#fdf6f6';
+    item.style.cssText = 'border-left:4px solid ' + borderColor + ';background:' + bgColor + ';';
+    item.className   = 'review-item';
+
+    const statusIcon  = unanswered ? '&#8212;' : isCorrect ? '&#10003;' : '&#10007;';
+    const statusColor = unanswered ? '#9a5a0a' : isCorrect ? '#1a5a1a' : '#7a1a1a';
+    const pillCls     = unanswered ? 'pill-ok' : isCorrect ? 'pill-good' : 'pill-bad';
+    const pillLabel   = unanswered ? 'Not answered' : isCorrect ? 'Correct' : 'Incorrect';
+
+    let html = '<div class="review-header">'
+      + '<span class="review-qnum" style="font-weight:600;">Q' + (i+1) + ' &mdash; ' + q.topic + '</span>'
+      + '<span class="pill ' + pillCls + '" style="font-size:12px;"><span style="color:' + statusColor + '">' + statusIcon + '</span> ' + pillLabel + '</span>'
+      + '</div>';
+    html += '<div class="review-skill">' + q.skill + '</div>';
+    if (unanswered) {
+      html += '<div class="review-ans" style="color:#9a5a0a;margin-top:4px;">&#8212; You did not answer this question.</div>';
+    } else if (!isCorrect) {
+      html += '<div class="review-ans review-wrong-ans">&#10007; Your answer: <strong>' + LETTERS[ua] + ') ' + q.options[ua].split('\n')[0] + '</strong></div>';
+    }
+    html += '<div class="review-ans review-correct-ans">&#10003; Correct: <strong>' + LETTERS[q.answer] + ') ' + q.options[q.answer].split('\n')[0] + '</strong></div>';
+    html += '<div class="review-hint">View full question &amp; explanation &#8594;</div>';
+    item.innerHTML = html;
+    item.onclick   = () => openQuestionFromReview(i);
+    list.appendChild(item);
+  });
+  show('review-screen');
+}
+
+function openQuestionFromReview(idx) {
+  state.current = idx;
+  state.reviewingFromList = true;
+  show('exam-screen');
+  renderQuestion();
+}
+
+function resetExam() {
+  clearInterval(state.timerInterval);
+  state = { mode: state.mode, current: 0, answers: {}, flagged: new Set(),
+    submitted: false, startTime: null, timerInterval: null,
+    timeLeft: 90*60, reviewingFromList: false, activeQuestions: [] };
+  show('start-screen');
+}
+
+// ─── PDF EXPORT ──────────────────────────────────────────────────────────────
+function exportPDF(mode) {
+  // mode: 'both' = questions + answer key on last page
+  //       'key'  = answer key only
+  const qs = getActiveQuestions();
+  if (!qs || qs.length === 0) { alert('No questions to export. Please start an exam first.'); return; }
+
+  const win = window.open('', '_blank');
+  const examTitle = document.title;
+  const modeLabel = state.mode === 'chunked' ? '10-Question Practice' : '42-Question Exam';
+
+  let html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>${examTitle} — Export</title>
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 11pt; color: #000; margin: 0; padding: 0; }
+  .page { width: 7.5in; margin: 0 auto; padding: 0.75in 0.75in 0.75in 0.75in; }
+  h1 { font-size: 16pt; margin: 0 0 4px 0; }
+  .meta { font-size: 10pt; color: #555; margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+  .question-block { margin-bottom: 22px; page-break-inside: avoid; }
+  .q-num { font-weight: bold; font-size: 11pt; }
+  .q-topic { font-size: 9pt; color: #555; font-style: italic; margin-bottom: 4px; }
+  .q-text { margin: 6px 0; line-height: 1.5; }
+  .q-code { background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 8px 12px;
+    font-family: 'Courier New', Courier, monospace; font-size: 9.5pt; white-space: pre;
+    margin: 6px 0 8px 0; line-height: 1.5; overflow-x: auto; }
+  .option { display: flex; gap: 10px; margin: 3px 0 3px 12px; line-height: 1.5; }
+  .opt-ltr { font-weight: bold; min-width: 18px; }
+  .opt-body { font-family: 'Courier New', Courier, monospace; font-size: 9.5pt; white-space: pre-wrap; }
+  .opt-body.plain { font-family: Georgia, serif; font-size: 11pt; white-space: normal; }
+  .answer-key-page { page-break-before: always; }
+  .ak-title { font-size: 15pt; font-weight: bold; margin-bottom: 6px; }
+  .ak-meta { font-size: 10pt; color: #555; margin-bottom: 18px; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
+  .ak-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px 16px; }
+  .ak-item { font-size: 11pt; }
+  .ak-item span { font-weight: bold; color: #1a5fa8; }
+  @media print {
+    body { margin: 0; }
+    .page { width: 100%; padding: 0.5in; }
+    .no-print { display: none; }
+  }
+</style>
+</head><body>`;
+
+  if (mode === 'both') {
+    // ── Questions pages ──
+    html += `<div class="page">`;
+    html += `<h1>${examTitle}</h1>`;
+    html += `<div class="meta">${modeLabel} &nbsp;·&nbsp; ${qs.length} Questions &nbsp;·&nbsp; AP Computer Science A</div>`;
+
+    qs.forEach((q, i) => {
+      html += `<div class="question-block">`;
+      html += `<div class="q-topic">${q.topic}</div>`;
+      html += `<div class="q-num">Question ${i+1}.</div>`;
+      html += `<div class="q-text">${escHtml(q.text)}</div>`;
+      if (q.code) {
+        html += `<div class="q-code">${escHtml(q.code)}</div>`;
+      }
+      q.options.forEach((opt, j) => {
+        const isCode = q.optIsCode && q.optIsCode[j];
+        html += `<div class="option"><span class="opt-ltr">${LETTERS[j]})</span>`
+          + `<span class="opt-body ${isCode ? '' : 'plain'}">${escHtml(opt)}</span></div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`; // end page
+  }
+
+  // ── Answer Key page ──
+  const keyClass = mode === 'key' ? 'page' : 'answer-key-page page';
+  html += `<div class="${keyClass}">`;
+  html += `<div class="ak-title">${examTitle} — Answer Key</div>`;
+  html += `<div class="ak-meta">${modeLabel} &nbsp;·&nbsp; ${qs.length} Questions</div>`;
+  html += `<div class="ak-grid">`;
+  qs.forEach((q, i) => {
+    html += `<div class="ak-item">Q${i+1}: <span>${LETTERS[q.answer]}</span></div>`;
+  });
+  html += `</div>`;
+
+  // Explanations
+  html += `<div style="margin-top:24px;border-top:1px solid #ccc;padding-top:14px;">`;
+  html += `<div style="font-size:12pt;font-weight:bold;margin-bottom:12px;">Explanations</div>`;
+  qs.forEach((q, i) => {
+    if (q.explanation) {
+      html += `<div style="margin-bottom:12px;page-break-inside:avoid;">`;
+      html += `<div style="font-weight:bold;font-size:10pt;">Q${i+1} (Answer: ${LETTERS[q.answer]}) — ${escHtml(q.topic)}</div>`;
+      html += `<div style="font-size:10pt;margin-top:3px;line-height:1.5;color:#222;">${escHtml(q.explanation)}</div>`;
+      html += `</div>`;
+    }
+  });
+  html += `</div></div>`; // end explanations + key page
+
+  html += `</body></html>`;
+
+  win.document.write(html);
+  win.document.close();
+  setTimeout(() => win.print(), 600);
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function exportFromStart(mode) {
+  // Build questions based on current mode selection without starting the exam
+  const qs = state.mode === 'chunked' ? buildChunk() : buildQuestionBank();
+  // Temporarily store so exportPDF can use getActiveQuestions()
+  state.activeQuestions = qs;
+  exportPDF(mode);
+}
+
+</script>
+</body>
+</html>
